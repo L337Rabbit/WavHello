@@ -45,8 +45,9 @@ namespace com.okitoki.wavhello
                 case "CUE ": return CueChunk.Read(fileStream, chunkID, chunkSize);
                 case "PLST": return PlaylistChunk.Read(fileStream, chunkID, chunkSize);
                 case "LIST": return AssociatedDataListChunk.Read(fileStream, chunkID, chunkSize);
-                case "SMPL": return ReadSamplerChunk();
-                case "INST": return ReadInstrumentChunk();
+                /*case "SMPL": return ReadSamplerChunk();
+                case "INST": return ReadInstrumentChunk();*/
+                default: return UnknownChunk.Read(fileStream, chunkID, chunkSize);
             }
 
             return chunk;
