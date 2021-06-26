@@ -21,6 +21,10 @@ namespace com.okitoki.wavhello.chunks
 
         public short BitsPerSample { get; set; }
 
+        public short ExtraParamsSize { get; set; }
+
+        public byte[] ExtraParamsData { get; set; }
+
         public static FormatChunk Read(FileStream fs, string chunkID, int chunkSize)
         {
             FormatChunk chunk = new FormatChunk();
@@ -36,8 +40,11 @@ namespace com.okitoki.wavhello.chunks
 
             if (chunk.AudioFormat == 1) { return chunk; }
 
-            short extraParamsSize = BitConverter.ToInt16(BinaryFileUtils.Read(fs, 2));
-            BinaryFileUtils.Read(fs, extraParamsSize);
+            /*
+            //This was based on specifications found on a certain website. It seems to not be the case
+            //that this is always included in files. 
+            chunk.ExtraParamsSize = BitConverter.ToInt16(BinaryFileUtils.Read(fs, 2));
+            chunk.ExtraParamsData = BinaryFileUtils.Read(fs, chunk.ExtraParamsSize);*/
 
             return chunk;
         }
@@ -52,7 +59,21 @@ namespace com.okitoki.wavhello.chunks
             bw.Write(chunk.BitRate);
             bw.Write(chunk.BlockAlign);
             bw.Write(chunk.BitsPerSample);
+
+            /*
+            //This was based on specifications found on a certain website. It seems to not be the case
+            //that this is always included in files.
+            if (chunk.AudioFormat != 1)
+            {
+                bw.Write(chunk.ExtraParamsSize);
+
+                if (chunk.ExtraParamsSize > 0)
+                {
+                    bw.Write(chunk.ExtraParamsData);
+                }
+            }*/
         }
+
         public override void Write(BinaryWriter bw)
         {
             FormatChunk.Write(bw, this);
